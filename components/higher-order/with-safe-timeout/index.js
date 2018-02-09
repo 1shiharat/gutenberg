@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { without } from 'lodash';
+
+/**
  * WordPress dependencies
  */
 import { Component } from '@wordpress/element';
@@ -23,7 +28,6 @@ function withSafeTimeout( OriginalComponent ) {
 			this.timeouts = [];
 			this.setTimeout = this.setTimeout.bind( this );
 			this.clearTimeout = this.clearTimeout.bind( this );
-			this.clear = this.clear.bind( this );
 		}
 
 		componentWillUnmount() {
@@ -33,7 +37,7 @@ function withSafeTimeout( OriginalComponent ) {
 		setTimeout( fn, delay ) {
 			const id = setTimeout( () => {
 				fn();
-				this.clear( id );
+				this.clearTimeout( id );
 			}, delay );
 			this.timeouts.push( id );
 			return id;
@@ -41,11 +45,7 @@ function withSafeTimeout( OriginalComponent ) {
 
 		clearTimeout( id ) {
 			clearTimeout( id );
-			this.clear( id );
-		}
-
-		clear( id ) {
-			this.timeouts = this.timeouts.filter( t => t !== id );
+			this.timeouts = without( this.timeouts, id );
 		}
 
 		render() {
