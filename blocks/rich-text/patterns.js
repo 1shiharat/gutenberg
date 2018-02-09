@@ -20,17 +20,6 @@ export default function( editor ) {
 	const getContent = this.getContent.bind( this );
 	const { setTimeout, onReplace } = this.props;
 
-	/**
-	 * Sets a timeout and checks if the given editor still exists.
-	 *
-	 * @param {Editor}   editor   TinyMCE editor instance.
-	 * @param {Function} callback The function to call.
-	 */
-	function setSafeTimeout( callback ) {
-		console.log( 'setSafeTimeout', callback );
-		setTimeout( () => ! editor.removed && callback() );
-	}
-
 	const VK = tinymce.util.VK;
 	const settings = editor.settings.wptextpattern || {};
 
@@ -70,9 +59,9 @@ export default function( editor ) {
 			enter();
 		// Wait for the browser to insert the character.
 		} else if ( keyCode === SPACE ) {
-			setSafeTimeout( () => searchFirstText( spacePatterns ) );
+			setTimeout( () => searchFirstText( spacePatterns ) );
 		} else if ( keyCode > 47 && ! ( keyCode >= 91 && keyCode <= 93 ) ) {
-			setSafeTimeout( inline );
+			setTimeout( inline );
 		}
 	}, true );
 
